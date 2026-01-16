@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+    <h1>My Notes</h1>
+    <a href="{% url 'note-create' %}" class="btn btn-primary">+ New Note</a>
+</div>
+
+{% for note in object_list %}
+<div class="note-card">
+    <div class="note-title">
+        <a href="{% url 'note-detail' note.pk %}" style="text-decoration: none; color: inherit;">{{ note.title }}</a>
+    </div>
+    <p class="meta">Created on {{ note.created_at|date:"M d, Y" }}</p>
+    <div style="margin-top: 15px;">
+        <a href="{% url 'note-update' note.pk %}"
+            style="color: var(--primary); text-decoration: none; font-size: 0.875rem;">Edit</a>
+        <a href="{% url 'note-delete' note.pk %}"
+            style="color: #ef4444; text-decoration: none; font-size: 0.875rem; margin-left:15px;">Delete</a>
+    </div>
+</div>
+{% empty %}
+<p>No notes found. Create your first note!</p>
+{% endfor %}
+{% endblock %}
