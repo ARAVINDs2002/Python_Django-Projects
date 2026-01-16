@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Task Dashboard{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem;">
+    <div>
+        <h2 style="margin: 0; font-size: 2rem;">Workspace</h2>
+        <p style="margin: 0.5rem 0 0; color: var(--text-muted);">Welcome back, {{ user.username }}. Here's what's
+            happening.</p>
+    </div>
+    {% if user.is_staff %}
+    <a href="{% url 'tasks:task_create' %}" class="btn btn-primary" style="padding: 0.8rem 1.5rem;">
+        <span style="font-size: 1.2rem; line-height: 1;">+</span> New Task
+    </a>
+    {% endif %}
+</div>
+
+{% if tasks %}
+<div class="task-list">
+    {% for task in tasks %}
+    <div class="task-card" style="padding: 2rem;">
+        <div class="task-info">
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                <h3 style="margin: 0; font-size: 1.25rem;">{{ task.title }}</h3>
+                {% if task.is_completed %}
+                <span
+                    style="background: rgba(16, 185, 129, 0.1); color: var(--accent); padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.7rem; font-weight: 700;">DONE</span>
+                {% endif %}
+            </div>
+            <p style="line-height: 1.6;">{{ task.description }}</p>
+            <div
+                style="margin-top: 1.25rem; display: flex; align-items: center; gap: 1rem; font-size: 0.8rem; color: var(--text-muted);">
+                <span>👤 {{ task.owner.username }}</span>
+                <span>📅 {{ task.created_at|date:"M d, Y" }}</span>
+            </div>
+        </div>
+
+        {% if user.is_staff %}
+        <div class="task-actions">
+            <a href="{% url 'tasks:task_update' task.pk %}" class="btn btn-outline"
+                style="padding: 0.5rem 1rem; font-size: 0.85rem;">Edit</a>
+            <a href="{% url 'tasks:task_delete' task.pk %}" class="btn btn-danger"
+                style="padding: 0.5rem 1rem; font-size: 0.85rem; background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2);">Delete</a>
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div
+    style="text-align: center; padding: 5rem 2rem; background: var(--glass); border: 1px dashed var(--glass-border); border-radius: 20px;">
+    <div style="font-size: 3rem; margin-bottom: 1rem;">📁</div>
+    <h3 style="color: var(--text-main);">No tasks active</h3>
+    <p style="color: var(--text-muted); max-width: 400px; margin: 0 auto 2rem;">
+        Your workspace is currently empty.
+        {% if user.is_staff %}
+        Start by creating your first mission-critical task.
+        {% else %}
+        Check back later for updates from the team.
+        {% endif %}
+    </p>
+    {% if user.is_staff %}
+    <a href="{% url 'tasks:task_create' %}" class="btn btn-primary">Initialize Workspace</a>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}
