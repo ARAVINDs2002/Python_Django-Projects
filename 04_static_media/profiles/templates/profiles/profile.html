@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container profile-page">
+    <div class="profile-header">
+        <div class="profile-image-container">
+            {% if profile.profile_picture %}
+            <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" class="profile-img">
+            {% else %}
+            <img src="{% static 'images/default-avatar.png' %}" alt="Default Avatar" class="profile-img">
+            {% endif %}
+        </div>
+        <div class="profile-info-text">
+            <h1>{{ profile.display_name|default:profile.user.username }}</h1>
+            <p class="bio">{{ profile.bio|default:"No bio yet..." }}</p>
+        </div>
+    </div>
+
+    <div class="profile-edit-section">
+        <div class="card">
+            <h2>Edit Profile</h2>
+            <form method="POST" enctype="multipart/form-data" class="profile-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="{{ form.display_name.id_for_label }}">Display Name</label>
+                    {{ form.display_name }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.bio.id_for_label }}">Bio</label>
+                    {{ form.bio }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.profile_picture.id_for_label }}">Profile Picture</label>
+                    {{ form.profile_picture }}
+                    <small class="form-text text-muted">Uploaded files go to: <code>media/profile_pics/</code></small>
+                </div>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
